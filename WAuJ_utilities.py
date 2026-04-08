@@ -221,11 +221,11 @@ def certAsDict( cert ) :
             if name.isalpha() :
               result[ name ] = value
       else :
-        print '%s() Error: Unexpected certificate format: "%s"' % ( funName, cert ) 
+        print('%s() Error: Unexpected certificate format: "%s"' % ( funName, cert )) 
     else :
-      print '%s() Error: Unexpected parameter value: "%s"' % ( funName, cert )
+      print('%s() Error: Unexpected parameter value: "%s"' % ( funName, cert ))
   else :
-    print '%s() Error: Unexpected parameter type: %s' % ( funName, type( cert ) )
+    print('%s() Error: Unexpected parameter type: %s' % ( funName, type( cert ) ))
   return result
 
 
@@ -270,21 +270,15 @@ def configIdAsDict( configId ) :
       for i in range( 0, len( hier ), 2 ) :
         ( name, value ) = hier[ i ], hier[ i + 1 ]
         result[ name ]  = value
-      if result.has_key( 'Name' ) :
-        print '''%s: Unexpected situation - "Name" attribute conflict,
-  Name = "%s", Name prefix ignored: "%s"''' % ( funName, result[ 'Name' ], Name )
+      if 'Name'  in result :
+        print('%s: Unexpected situation - "Name" attribute conflict,\n  Name = "%s", Name prefix ignored: "%s"' % ( funName, result[ 'Name' ], Name ))
       else :
         result[ 'Name' ] = Name
     else :
-      print '''%(funName)s:
-  Warning: The specified configId doesn\'t match the expected pattern,
-           and is ignored.
- configId: "%(configId)s"''' % locals()
+      print('%(funName)s:\n  Warning: The specified configId doesn\'t match the expected pattern,\n           and is ignored.\n configId: "%(configId)s"' % locals())
   except :
     ( kind, value ) = sys.exc_info()[ :2 ]
-    print '''%(funName)s: Unexpected exception.\n
-  Exception  type: %(kind)s
-  Exception value: %(value)s''' % locals()
+    print('%(funName)s: Unexpected exception.\n  Exception  type: %(kind)s\n  Exception value: %(value)s' % locals())
   return result
 
 
@@ -330,8 +324,8 @@ def configIdFilter( Type, pattern ) :
     result = result[ 0 ]
   else :
     if len( result ) > 1 :
-      print '%s() error: too many values (%d).' % ( callerName(), len( result ) )
-      print '   Type = "%s"\npattern = "%s"' % ( Type, pattern )
+      print('%s() error: too many values (%d).' % ( callerName(), len( result ) ))
+      print('   Type = "%s"\npattern = "%s"' % ( Type, pattern ))
     result = ''
   return result
 
@@ -377,20 +371,20 @@ def configInfoAsDict( Type, scope = None ) :
       #-------------------------------------------------------------------------
       name = name.split( '(', 1 )[ 0 ]
       if name :
-        if result.has_key( name ) :
+        if name  in result :
           raise IndexError( name )
         result[ name ] = entry
-  except NameError, e :
+  except NameError as e:
     result = {}
-    print '%s: Name not found: %s' % ( funName, e )
-  except IndexError, e :
+    print('%s: Name not found: %s' % ( funName, e ))
+  except IndexError as e:
     result = {}
-    print '%s: Name collision: %s' % ( funName, e )
+    print('%s: Name collision: %s' % ( funName, e ))
   except :
     Type, value = sys.exc_info()[ :2 ]
     result = {}
-    print '%s: Exception  type: %s' % ( funName, str( Type ) )
-    print '%s: Exception value: %s' % ( funName, str( Value ) )
+    print('%s: Exception  type: %s' % ( funName, str( Type ) ))
+    print('%s: Exception value: %s' % ( funName, str( Value ) ))
   return result
 
 
@@ -451,9 +445,9 @@ def displayAttributes( Type ) :
     attr = [ x.split( ' ', 1 ) for x in text ]
     width = max( [ len( x[ 0 ] ) for x in attr ] )
     for a in attr :
-      print '%*s %s' % ( width, a[ 0 ], a[ 1 ] )
+      print('%*s %s' % ( width, a[ 0 ], a[ 1 ] ))
   else :
-    print 'Unknown Type:', Type
+    print('Unknown Type:', Type)
 
 
 #-------------------------------------------------------------------------------
@@ -476,8 +470,7 @@ def displayAttributes( Type ) :
 def displayDict( dict, width = None ) :
   'displayDict( dict, width = None ) - Display dictionary contents in key name order'
   try :
-    names = dict.keys()
-    names.sort()
+    names = sorted(dict.keys())
     if dict :
       if not width :
         width = max( [ len( x ) for x in names ] )
@@ -485,14 +478,14 @@ def displayDict( dict, width = None ) :
         value = dict[ name ]
         if type( value ) == type( '' ) or type( value ) == type( u'' ) :
           if len( value ) > 0 and value[ 0 ] == '[' and value[ -1 ] == ']' and value.count( ' ' ) > 0 :
-            print '%*s : [' % ( width, name )
+            print('%*s : [' % ( width, name ))
             #-------------------------------------------------------------------
             # Special case: Check for double quoted items.
             # e.g., Config IDs containing embedded blanks.
             #-------------------------------------------------------------------
             if value.find( '"' ) < 0 :
               for item in value[ 1:-1 ].split( ' ' ) :
-                print '%*s    %s' % ( width, ' ', item )
+                print('%*s    %s' % ( width, ' ', item ))
             else :
               value = value[ 1:-1 ]      # Remove brackets '[' & ']'
               while value :              # As long as data remains...
@@ -503,19 +496,19 @@ def displayDict( dict, width = None ) :
                   item, value = value.split( ' ', 1 )
                 else :                           # Nope, we're done
                   item, value = value, ''
-                print '%*s    %s' % ( width, ' ', item )
-            print '%*s   ]' % ( width, ' ' )
+                print('%*s    %s' % ( width, ' ', item ))
+            print('%*s   ]' % ( width, ' ' ))
           else :
-            print '%*s : %s' % ( width, name, value )
+            print('%*s : %s' % ( width, name, value ))
         elif type( value ) == type( {} ) :
-          print '%*s : {' % ( width, name )
+          print('%*s : {' % ( width, name ))
           displayDict( value, width + 4 + max( [ len( x ) for x in value.keys() ] ) )
-          print '%*s   }' % ( width, ' ' )
+          print('%*s   }' % ( width, ' ' ))
         else :
-          print '%*s : %s' % ( width, name, `value` )
+          print('%*s : %s' % ( width, name, repr(value) ))
   except :
     Type, value = sys.exc_info()[ :2 ]
-    print '%s() exception:\n  type: %s\n value: %s' % ( callerName(), str( Type ), str( value ) )
+    print('%s() exception:\n  type: %s\n value: %s' % ( callerName(), str( Type ), str( value ) ))
 
 
 #-------------------------------------------------------------------------------
@@ -531,11 +524,11 @@ def displayNodeVersions() :
   nodes = [ AdminConfig.showAttribute( n, 'name' ) for n in AdminConfig.list( 'Node' ).splitlines() ]
   nodes.sort()
   width = max( [ len( x ) for x in nodes ] )
-  print '\n%*s | Version' % ( width, 'Node' )
+  print('\n%*s | Version' % ( width, 'Node' ))
   print ( '-' * width ) + '-+-' + ( '-' * 8 )
   for node in nodes :
-    print '%*s | %s' % ( width, node, AdminTask.getNodeBaseProductVersion( '[-nodeName %s]' % node ) )
-  print
+    print('%*s | %s' % ( width, node, AdminTask.getNodeBaseProductVersion( '[-nodeName %s]' % node ) ))
+  print()
 
 
 #-------------------------------------------------------------------------------
@@ -555,21 +548,20 @@ def displayNodeVersions() :
 #-------------------------------------------------------------------------------
 def displayOperations( bean, expand = 0 ) :
   'displayOperations( bean, expand = 0 ) - Display signature details of specified MBean operations.'
-  sortByFunName = lambda x, y: cmp( x[ 1 ].lower(), y[ 1 ].lower() )
   data = []
   for line in re.sub( '\[L([\w.]+);', r'\1[]', Help.operations( bean ) ).splitlines()[ 1:-1 ] :
     result, sign = line.split( ' ', 1 )
     data.append( ( result, sign ) )
   width = max( [ len( x[ 0 ] ) for x in data ] )
-  data.sort( sortByFunName )
+  data.sort( key=lambda x: x[ 1 ].lower() )
 # for result, sign in data :
 #   print '%*s %s' % ( width, result, sign )
   for result, sign in data :
     L, R = sign.find( '(' ), sign.find( ')' )
     if ( L + 1 == R ) or not expand :
-      print '%*s %s' % ( width, result, sign )
+      print('%*s %s' % ( width, result, sign ))
     else :
-      print '%*s %s' % ( width, result, sign[ : L + 1 ] )
+      print('%*s %s' % ( width, result, sign[ : L + 1 ] ))
       p = sign[ L + 1 : R ].split( ', ' )
       comma = ','
       for i in range( len( p ) ) :
@@ -577,8 +569,8 @@ def displayOperations( bean, expand = 0 ) :
           comma = ','
         else :
           comma = ''
-        print ' ' * ( width + L + 2 ), p[ i ] + comma
-      print ' ' * ( width + L ), ')'
+        print(' ' * ( width + L + 2 ) + p[ i ] + comma)
+      print(' ' * ( width + L ) + ')')
 
 
 #-------------------------------------------------------------------------------
@@ -613,22 +605,22 @@ def displayWSASvars( cellName = None, nodeName = None, serverName = None ) :
   # Was the cellName specified?
   #-----------------------------------------------------------------------------
   if cellName :
-    if cells.has_key( cellName ) :
+    if cellName  in cells :
       cell = cells[ cellName ]
     else :
-      print '%s() - Error, cell not found: %s' % ( funName, cellName )
+      print('%s() - Error, cell not found: %s' % ( funName, cellName ))
       return
   else :
     #---------------------------------------------------------------------------
     # Can we quietly default to the only cell that is present?
     #---------------------------------------------------------------------------
     if len( cells.keys() ) == 1 :
-      cellName = cells.keys()[ 0 ]
+      cellName = list(cells.keys())[ 0 ]
       cell = cells[ cellName ]
     else :
       cell = AdminConfig.list( 'Cell' ).splitlines()[ 0 ]
       cellName = AdminConfig.showAttribute( cell, 'name' )
-      print '%s() - Warning: cellName not specified, using: %s' % ( funName, cellName )
+      print('%s() - Warning: cellName not specified, using: %s' % ( funName, cellName ))
 
   #-----------------------------------------------------------------------------
   # Build the scope containment path using the specified parameters
@@ -644,11 +636,11 @@ def displayWSASvars( cellName = None, nodeName = None, serverName = None ) :
     for node in AdminConfig.list( 'Node', cell ).splitlines() :
       name = AdminConfig.showAttribute( node, 'name' )
       nodes[ name ] = node
-    if nodes.has_key( nodeName ) :
+    if nodeName  in nodes :
       node = nodes[ nodeName ]
       path += '/Node:' + nodeName
     else :
-      print '%s() - Error: node not found: %s' % ( funName, nodeName )
+      print('%s() - Error: node not found: %s' % ( funName, nodeName ))
       return
 
   #-----------------------------------------------------------------------------
@@ -659,20 +651,20 @@ def displayWSASvars( cellName = None, nodeName = None, serverName = None ) :
     servers = {}
     for server in AdminConfig.list( 'Server', node ).splitlines() :
       name = AdminConfig.showAttribute( server, 'name' )
-      if servers.has_key( name ) :
+      if name  in servers :
         servers[ name ] += '\n' + server
       else :
         servers[ name ] = server
     #---------------------------------------------------------------------------
     # Do any servers with this name exist?
     #---------------------------------------------------------------------------
-    if servers.has_key( serverName ) :
+    if serverName  in servers :
       server = servers[ serverName ]
       #-------------------------------------------------------------------------
       # How many servers with this name exist with the specified scope?
       #-------------------------------------------------------------------------
       if len( server.splitlines() ) > 1 :
-        print '%s() - Error: ambiguous server specified: %s' % ( funName, serverName )
+        print('%s() - Error: ambiguous server specified: %s' % ( funName, serverName ))
         return
 
     #---------------------------------------------------------------------------
@@ -708,18 +700,17 @@ def displayWSASvars( cellName = None, nodeName = None, serverName = None ) :
   #-----------------------------------------------------------------------------
   # Sort the variable names & determine the width of the longest name
   #-----------------------------------------------------------------------------
-  names = vars.keys()
-  names.sort()
+  names = sorted(vars.keys())
   width = max( [ len( n ) for n in names ] )
 
   #-----------------------------------------------------------------------------
   # Display the names, in sorted order
   #-----------------------------------------------------------------------------
   width = max( width, 10 )
-  print '%s | %s' % ( 'Variable'.center( width ), 'Value ' )
-  print '%s-+-%s' % ( '-' * width, '-' * 25 )
+  print('%s | %s' % ( 'Variable'.center( width ), 'Value ' ))
+  print('%s-+-%s' % ( '-' * width, '-' * 25 ))
   for name in names :
-    print '%*s | %s' % ( width, name, vars[ name ] )
+    print('%*s | %s' % ( width, name, vars[ name ] ))
 
 
 #-------------------------------------------------------------------------------
@@ -865,9 +856,9 @@ def fullSync() :
   if dm :
     nodes = AdminControl.invoke( dm, 'syncActiveNodes', 'true' )
     nodes = ', '.join ( nodes.splitlines() )
-    print '%s(): synchronized nodes: %s' % ( funName, nodes )
+    print('%s(): synchronized nodes: %s' % ( funName, nodes ))
   else :
-    print '%s(): Synchronization not possible without an active Deployment Manager.' % funName
+    print('%s(): Synchronization not possible without an active Deployment Manager.' % funName)
 
 
 #-------------------------------------------------------------------------------
@@ -882,7 +873,7 @@ def fullSync() :
 def getEndPointName( port, serverName, nodeName = None ) :
   'getEndPointName( port, serverName, nodeName = None ) - Return the name of the configured EndPoint for the given port on the specified server.'
   if type( port ) == type( 0 ) :
-    port = `port`                      # Ensure that the port number is a string
+    port = repr(port)                      # Ensure that the port number is a string
   return getPorts( serverName, nodeName ).get( port, '' )
 
 
@@ -1023,8 +1014,8 @@ def MBattrAsDict( mbean ) :
     #       only the first (i.e., the leading non-blank characters)
     #       will be returned.
     #---------------------------------------------------------------------------
-    if result.has_key( 'Modifiable' ) :
-      print '%(funName)s: "Modifiable" attribute already exists, and not replace.' % locals()
+    if 'Modifiable'  in result :
+      print('%(funName)s: "Modifiable" attribute already exists, and not replace.' % locals())
     else :
       result[ 'Modifiable' ] = [ x.split( ' ', 1 )[ 0 ] for x in attr if x.endswith( 'RW' ) ]
   except :
@@ -1037,14 +1028,14 @@ def MBattrAsDict( mbean ) :
     ( kind, value ) = str( kind ), str( value )
     if value.endswith( notavail ) :
       if 'AdminTask' in sys.modules.keys() :
-        print '%(funName)s "%(notavail)s": Was wsadmin started with "-conntype none"?' % locals()
+        print('%(funName)s "%(notavail)s": Was wsadmin started with "-conntype none"?' % locals())
       else :
-        print '%(funName)s "%(notavail)s": wsadmin isn\'t connected to a server.' % locals()
+        print('%(funName)s "%(notavail)s": wsadmin isn\'t connected to a server.' % locals())
     elif value.find( 'WASX7025E' ) > -1 :
-      print '%(funName)s: Invalid mbean identifier: %(mbean)s' % locals()
+      print('%(funName)s: Invalid mbean identifier: %(mbean)s' % locals())
     else :
-      print 'Exception  type: ' + kind
-      print 'Exception value: ' + value
+      print('Exception  type: ' + kind)
+      print('Exception value: ' + value)
   return result
 
 
@@ -1077,14 +1068,10 @@ def MBnameAsDict( beanName ) :
         ( name, value ) = field.split( '=', 1 )
         result[ name ] = value
     else :
-      print '''%(funName)s:
-Warning: Specified MBean name doesn\'t start with "%(domain)s" and is ignored.
-  MBean name: "%(beanName)s"''' % locals()
+      print('%(funName)s:\nWarning: Specified MBean name doesn\'t start with "%(domain)s" and is ignored.\n  MBean name: "%(beanName)s"' % locals())
   except :
     ( kind, value ) = sys.exc_info()[ :2 ]
-    print '''%(funName)s: Unexpected exception.\n
-  Exception  type: %(kind)s
-  Exception value: %(value)s''' % locals()
+    print('%(funName)s: Unexpected exception.\n  Exception  type: %(kind)s\n  Exception value: %(value)s' % locals())
   return result
 
 
@@ -1206,16 +1193,16 @@ def nvTextListAsDict( text ) :
               ( name, value ) = ( contents, '' )
             result[ name ] = value
           else :
-            print '%s error - Unexpected text: "%s" (ignored).' % ( funName, pair )
+            print('%s error - Unexpected text: "%s" (ignored).' % ( funName, pair ))
         #-----------------------------------------------------------------------
         # All name/pair sub-strings have been processed, we're done
         #-----------------------------------------------------------------------
         break
     else :
-      print '%s error - Unable to split data, empty dictionary returned.' % funName
+      print('%s error - Unable to split data, empty dictionary returned.' % funName)
       return {}
   else :
-    print '%s error - Unexpected data format: "%s", empty dictionary returned.' % ( funName, text )
+    print('%s error - Unexpected data format: "%s", empty dictionary returned.' % ( funName, text ))
   return result
 
 #-------------------------------------------------------------------------------
@@ -1242,7 +1229,7 @@ def parentTypes( Type, WSAStypes = None ) :
         if result.startswith( 'WASX7351I' ) :
             result = newline.join( [ kind for kind in WSAStypes if AdminConfig.attributes( kind ).find( Type ) > -1 ] )
     else :
-        print 'parentTypes() error: unknown / unrecognized type:', Type
+        print('parentTypes() error: unknown / unrecognized type:', Type)
         result = None
     return result
 
@@ -1273,7 +1260,7 @@ def scopeAsDict( configId ) :
     result[ 'name'     ] = result[ result[ 'scopeType' ] ]
   except :
     Type, value = sys.exc_info()[ :2 ]
-    print '%s exception  Type: %s\n\tvalue: %s' % ( funName, str( Type ), str( value ) )
+    print('%s exception  Type: %s\n\tvalue: %s' % ( funName, str( Type ), str( value ) ))
   return result
 
 
@@ -1299,13 +1286,13 @@ def scopeNameAsDict( scopeName ) :
   try :
     nv = scopeName.split( ':' )
     if len( nv ) % 2 :
-       raise ValueError, '%s error: Unrecognized input: %s' % ( funName, scopeName )
+       raise ValueError('%s error: Unrecognized input: %s' % ( funName, scopeName ))
     for i in range( 0, len( nv ), 2 ) :
       n, v = nv[ i ], nv[ i + 1 ]
 #     print '%s() name="%s" value="%s"' % ( funName, n[ 1:-1 ], v )
       result[ n[ 1:-1 ] ] = v
   except :
-    print '%s exception: %s' % ( funName, str( sys.exc_info()[ 1 ] ) )
+    print('%s exception: %s' % ( funName, str( sys.exc_info()[ 1 ] ) ))
     result = {}
   return result
 
@@ -1327,11 +1314,11 @@ def scopedWSASvariables( configId ) :
   funName = callerName()
   start = configId.find( '(' )
   if start < 0 :
-    print '%s() error - no \'(\' found in configId: "%s"' % ( funName, configId )
+    print('%s() error - no \'(\' found in configId: "%s"' % ( funName, configId ))
     return
   fini = configId.find( '|' )
   if fini < 0 :
-    print '%s*( error - no \'|\' found in configId: "%s"' % ( funName, configId )
+    print('%s*( error - no \'|\' found in configId: "%s"' % ( funName, configId ))
     return
   #-----------------------------------------------------------------------------
   # Quick and easy extraction of the part of the configId we need to
@@ -1406,12 +1393,12 @@ def showAsDict( configId ) :
         if ( value[ 0 ] == '"' ) and ( value[ -1 ] == '"' ) :
           value = value[ 1:-1 ]
         result[ key ] = value
-  except NameError, e :
-    print 'Name not found: ' + str( e )
+  except NameError as e:
+    print('Name not found: ' + str( e ))
   except :
     ( kind, value ) = sys.exc_info()[ :2 ]
-    print 'Exception  type: ' + str( kind )
-    print 'Exception value: ' + str( value )
+    print('Exception  type: ' + str( kind ))
+    print('Exception value: ' + str( value ))
   return result
 
 
@@ -1524,11 +1511,11 @@ def stringAsNestedList( str ) :
     assert len( result ) == 1          #
     return result[ 0 ]                 #
   else :                               #
-    print 'stringAsNestedList() Unexpected Error.'
-    print '  state:', state            #
-    print ' result:', repr( result )   #
-    print '    lst:', repr( lst )      #
-    print ' lstStr:', repr( lstStr )   #
+    print('stringAsNestedList() Unexpected Error.')
+    print('  state:', state)
+    print(' result:', repr( result ))
+    print('    lst:', repr( lst ))
+    print(' lstStr:', repr( lstStr ))
     return None                        #
 
 
@@ -1588,15 +1575,13 @@ def stringListAsList( str ) :
         else :
           ( val, str ) = str.split( ' ', 1 )
           result.append( val )
-    except NameError, e :
-      print '%s: Name not found: %s' % ( funName, str( e ) )
+    except NameError as e:
+      print('%s: Name not found: %s' % ( funName, str( e ) ))
     except :
       ( kind, value ) = sys.exc_info()[ :2 ]
-      print '''%(funName)s: Unexpected error:
-  Exception  type: %(kind)s
-  Exception value: %(value)s''' % locals()
+      print('%(funName)s: Unexpected error:\n  Exception  type: %(kind)s\n  Exception value: %(value)s' % locals())
   else :
-    print '%s: Unexpected data format.  Missing []' % funName
+    print('%s: Unexpected data format.  Missing []' % funName)
   return result
 
 
@@ -1651,25 +1636,25 @@ def unravel( value, configId, subParens = 0, quiet = 0 ) :
     mo = var.search( value )           # Match Object (mo)
     if mo :                            # One exists
       name = mo.group( 1 )             # Named variable e.g., "${NAME}" => 'NAME'
-      if not variables.has_key( name ) :
+      if not name  in variables :
         cDict = showAsDict( configId ) # Check for a specific / known "defect"
         if name == 'SERVER' :          #   i.e., ${SERVER} on a nodeagent
           if cDict[ 'serverType' ] == 'NODE_AGENT' :
             val = 'nodeagent'          #
             if not quiet :
-                print '%s() warning: "nodeagent" being used for ${SERVER}.' % funName
+                print('%s() warning: "nodeagent" being used for ${SERVER}.' % funName)
           else :                       #
             break                      #
         elif name == 'CELL' :          #
-          if variables.has_key( 'WAS_CELL_NAME' ) :
+          if 'WAS_CELL_NAME'  in variables :
             val = variables[ 'WAS_CELL_NAME' ]
             if not quiet :
-              print '%s() warning: "${WAS_CELL_NAME}" being used instead of ${CELL}.' % funName
+              print('%s() warning: "${WAS_CELL_NAME}" being used instead of ${CELL}.' % funName)
           else :                       #
             break                      #
         else :                         #
-          print '%s() error - Unknown variable: "%s"' % ( funName, name ) 
-          print '\t"%s"' % value
+          print('%s() error - Unknown variable: "%s"' % ( funName, name )) 
+          print('\t"%s"' % value)
           break                        # We're done
       else :                           # The specified variable has a value
         val = variables[ name ]        #   ... use it
@@ -1678,7 +1663,7 @@ def unravel( value, configId, subParens = 0, quiet = 0 ) :
 #     value = re.sub( var, val, value, 1 ) 
       value = value.replace( '${%s}' % name, val, 1 ) 
     else :
-      print '%s() error - No substitution found.' % funName 
+      print('%s() error - No substitution found.' % funName) 
       break                            # be sure to terminate the loop
   return value 
 
@@ -1700,13 +1685,7 @@ def Usage( cmd = 'WAuJ_utilities' ) :
   #-----------------------------------------------------------------------------
   info = docstring
 
-  print '''     File: %(cmd)s.py
-%(info)s
- Examples:
-   import %(cmd)s as WAuJ\n
-   ...
-   if WAuJ.localMode() :
-     print "Connection required."''' % locals()
+  print('     File: %(cmd)s.py\n%(info)s\n Examples:\n   import %(cmd)s as WAuJ\n\n   ...\n   if WAuJ.localMode() :\n     print("Connection required."' % locals())
 
 
 #-------------------------------------------------------------------------------
@@ -1786,7 +1765,7 @@ def WSASvariables( configId ) :
       # If the server is a member of a cluster, get that configId too.
       # And add any of these to the result.
       #-------------------------------------------------------------------------
-      if itemDict.has_key( 'clusterName' ) :
+      if 'clusterName'  in itemDict :
         clusterPrefix = '(cells/%s/clusters/%s|' % ( cfgDict[ 'cells' ], itemDict[ 'clusterName' ] )
         clusterId     = configIdFilter( 'ServerCluster', clusterPrefix )
         result.update( scopedWSASvariables( clusterId ) )
@@ -1829,9 +1808,9 @@ def WSASvariables( configId ) :
       return result
 
     else :
-      print '%s(): error - unrecognized configId type: "%s"' % ( callerName(), Type )
+      print('%s(): error - unrecognized configId type: "%s"' % ( callerName(), Type ))
   else :
-    print '%s(): error - unrecognized configId string: %s' % ( callerName(), configId )
+    print('%s(): error - unrecognized configId string: %s' % ( callerName(), configId ))
 
   return
 

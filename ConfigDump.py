@@ -38,7 +38,7 @@ import os
 def printException(msg,exceptionInfo):
 	for line in exceptionInfo:
 		msg=msg+'\n'+str(line)
-	print 'ERROR: ' + msg
+	print('ERROR: ' + msg)
 
 #Load libraries from where the path they are installed.
 path = None
@@ -66,14 +66,11 @@ except:
 # Gets configuration data from the repository
 #########################################################################################################
 #########################################################################################################
-True=1
-False=0
-
 #Ref0002 Begin
-try: 
+try:
 	cu.printMsg('Begin run.',False)
 except:
-	print 'ERROR, cannot continue.  Failed to load support scripts.  Run wsadmin -f ConfigDump.py from the same directory it exists in.'
+	print('ERROR, cannot continue.  Failed to load support scripts.  Run wsadmin -f ConfigDump.py from the same directory it exists in.')
 	sys.exit(1)
 
 excludeTypeList = []  #Ref0044
@@ -158,4 +155,4 @@ cu.writeRepositoryFile()
 cu.printMsg('End run.',False)
 cu.printMsg('Ignore the WASX7146I and WASX7309W messages.  No modifications to the repository were made so AdminConfig.save() was not invoked.',False)
 
-print AdminConfig.queryChanges()
+print(AdminConfig.queryChanges())

@@ -65,8 +65,6 @@ try:                #Ref0027
 except:             #Ref0027
 	None            #Ref0027
 
-True=1
-False=0
 Debug=False
 
 RepositoryFile=''
@@ -87,7 +85,7 @@ PropertyAttributes=['properties','customProperties','systemProperties','environm
 def printMsg(msg,dbg):
 	global Debug
 	if Debug or not dbg:
-		print time.strftime('[%y/%m/%d %H:%M:%S] ') + str(msg)
+		print(time.strftime('[%y/%m/%d %H:%M:%S] ') + str(msg))
 
 #Ref0002 Begin: Added to improve exception reporting 
 #########################################################################################################
@@ -104,8 +102,8 @@ def printException(msg,exceptionInfo):
 		lines = traceback.extract_stack()[:-2] + traceback.extract_tb(etb)
 		for line in lines:
 			(fileName, lineNumber, functionName, codeLine) = line
-			print '  File "%s", line %i, in %s ' % (fileName, lineNumber, functionName)
-			print '    %s' % codeLine
+			print('  File "%s", line %i, in %s ' % (fileName, lineNumber, functionName))
+			print('    %s' % codeLine)
 #Ref0002 End
 
 
@@ -238,7 +236,7 @@ def getConfigElements(configElements,AdminConfig,regexList):
 def getConfigAsDict(cfg,AdminConfig):
 	global MasterDict
 	cDict = {}
-	if not MasterDict.has_key(cfg):
+	if cfg not in MasterDict:
 		try:
 			printMsg('Getting ' + cfg,True)
 			attrs=AdminConfig.show(cfg)
@@ -385,7 +383,7 @@ def writeRepositoryFile():
 		defaultFile=getCellNames(MasterDict)[0]+time.strftime('-%y-%m-%d-%H-%M-%S')+'.cfg'
 	except:
 		try:
-			defaultFile=getConfigIDCell(MasterDict.keys()[0])+time.strftime('-%y-%m-%d-%H-%M-%S')+'.cfg'
+			defaultFile=getConfigIDCell(list(MasterDict.keys())[0])+time.strftime('-%y-%m-%d-%H-%M-%S')+'.cfg'
 		except:
 			None
 	if RepositoryFile=='':
@@ -405,12 +403,12 @@ def writeRepositoryFile():
 		else:
 			f.write('CellSuffix='+CellSuffix+'\n')
 		#End Ref0037
-		mkeys = MasterDict.keys()
+		mkeys = list(MasterDict.keys())
 		while len(mkeys)>0:
 			mkey = mkeys.pop()
 			f.write(mkey+'\n')
 			printMsg('Key ' + mkey + '\n' + str(MasterDict[mkey]),True)
-			keys = MasterDict[mkey].keys()
+			keys = list(MasterDict[mkey].keys())
 			while len(keys)>0:
 				key = keys.pop()
 				f.write('\t'+key+'='+MasterDict[mkey][key]+'\n')
@@ -787,7 +785,7 @@ def getNameAndScope(configID):
 	nameAttrList = ['name','alias']  #Ref0015
 	rtnVal = 'NAME_NOT_FOUND'        #Ref0015
 	for nameAttr in nameAttrList:    #Ref0015
-		if MasterDict[configID].keys().count(nameAttr) > 0: #Ref0015
+		if nameAttr in MasterDict[configID]: #Ref0015
 			rtnVal = MasterDict[configID][nameAttr] + ' (' + getScope(configID) + ')'
 	return rtnVal  #Ref0015
 
@@ -881,7 +879,7 @@ def getPMIConfig(moduleName,server):
 	rtnVal={'NOT_FOUND':'NOT_FOUND'}
 	keys=findConfigIDs('.*/'+nodeName+'/.*/'+serverName+'.pmi-config.xml.PMIModule_.*',True,MasterDict)
 	for key in keys:
-		if MasterDict[key].has_key('moduleName') and MasterDict[key]['moduleName'] == moduleName:
+		if 'moduleName' in MasterDict[key] and MasterDict[key]['moduleName'] == moduleName:
 			rtnVal=MasterDict[key]
 			break
 	printMsg('getPMIConfig <= '+str(rtnVal), True)
@@ -892,7 +890,7 @@ def getPMIConfig(moduleName,server):
 #########################################################################################################
 def getPMICellValue(pmiConfig):
 	rtnVal='not configured'
-	if pmiConfig.has_key('enable'):
+	if 'enable' in pmiConfig:
 		enable=pmiConfig['enable']
 		if enable=='[]':
 			enable='not configured'
@@ -1757,7 +1755,7 @@ def ReportFileSystem(ServerDataList):
 					fileDate = fields[0].split(' ')[0]
 					fileTime = '%s GMT %s' % (fields[0].split(' ')[1],fields[0].split(' ')[2])
 				except:
-					print line
+					print(line)
 					printMsg('ERROR: Unsupported file listing format.',False)
 					sys.exit(1)
 #End Ref0035 Adding AIX support
@@ -1820,9 +1818,11 @@ def readFileFromTarAsLines(tarFile,fileName):
 	rtnVal = []
 	while True:
 		line=file.readline()
-		if line == "":
+		if line == b"":
 			break
 		else:
+			if isinstance(line, bytes):
+				line = line.decode('utf-8')
 			rtnVal.append(line.strip())
 	file.close()
 	return rtnVal

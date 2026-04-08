@@ -83,8 +83,6 @@ sys.path.append(path)
 ScriptPath=path #Ref0011
 
 import ConfigUtils as cu
-True=1
-False=0
 
 #########################################################################################################
 # Creates a report table of jvm arguments and adds the table to rptParms
@@ -406,7 +404,7 @@ def reportPMIStatGroups(rptParms):
 		for server in servers:
 			config=cu.getPMIConfig(name,server)
 			cellValue = 'not configured'
-			if config.has_key('pmimodules'):
+			if 'pmimodules' in config:
 				cellValue=[]
 				pmiMods=cu.stringListAsList(config['pmimodules'])
 				for pmiMod in pmiMods:
@@ -1704,12 +1702,12 @@ def getTAIConfigID(domain,cell,classname):
 #########################################################################################################
 #########################################################################################################
 if len(sys.argv) == 2 and (sys.argv[1].find('?') > -1 or sys.argv[1].upper().find('HELP') > -1): #Ref0051
-	print 'Syntax:'
-	print '  python '+ sys.argv[0] + ' arg1 arg2 arg3 ...'
-	print '    Where arg is either'
-	print '      a properties file name'
-	print '    or'
-	print '      a property in the form of PropertyName=PropertyValue'
+	print('Syntax:')
+	print('  python '+ sys.argv[0] + ' arg1 arg2 arg3 ...')
+	print('    Where arg is either')
+	print('      a properties file name')
+	print('    or')
+	print('      a property in the form of PropertyName=PropertyValue')
 	sys.exit(0)
 
 cu.printMsg('Begin run.',False)
