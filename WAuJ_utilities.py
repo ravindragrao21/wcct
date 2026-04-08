@@ -549,7 +549,7 @@ def displayNodeVersions() :
 def displayOperations( bean, expand = 0 ) :
   'displayOperations( bean, expand = 0 ) - Display signature details of specified MBean operations.'
   data = []
-  for line in re.sub( '\[L([\w.]+);', r'\1[]', Help.operations( bean ) ).splitlines()[ 1:-1 ] :
+  for line in re.sub( r'\[L([\w.]+);', r'\1[]', Help.operations( bean ) ).splitlines()[ 1:-1 ] :
     result, sign = line.split( ' ', 1 )
     data.append( ( result, sign ) )
   width = max( [ len( x[ 0 ] ) for x in data ] )
@@ -1631,7 +1631,7 @@ def unravel( value, configId, subParens = 0, quiet = 0 ) :
   #-----------------------------------------------------------------------------
   if subParens :
     value = value.replace( '(', '{' ).replace( ')', '}' )
-  var = re.compile( '\${(\w+)}' )      # Find a valid variable
+  var = re.compile( r'\${(\w+)}' )      # Find a valid variable
   while value.find( '${' ) > -1 :      # Does it look like one exists?
     mo = var.search( value )           # Match Object (mo)
     if mo :                            # One exists
@@ -1725,7 +1725,7 @@ def WSASvariables( configId ) :
     return Type
 
   result = {}
-  mo = re.compile( '\.xml#(\w+)_\d+\)$' ).search( configId )
+  mo = re.compile( r'\.xml#(\w+)_\d+\)$' ).search( configId )
 # print callerName(), 'mo:', mo
   if mo :
     cfgDict  = configIdAsDict( configId )

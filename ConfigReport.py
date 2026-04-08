@@ -1071,9 +1071,9 @@ def NodeAgentReport():
 #########################################################################################################
 def CellSummaryReport():
 	cu.printMsg('Generating cell summary report',False)
-	reports = [['Application Servers','/.*\#Server_.*','name',True,['serverType','APPLICATION_SERVER']],#Ref0008\ 
-			   ['Web Servers','/.*\#Server_.*','name',True,['serverType','WEB_SERVER']],#Ref0008\ 
-	           ['Clusters','/.*\#ServerCluster_.*','name',False],\
+	reports = [['Application Servers',r'/.*\#Server_.*','name',True,['serverType','APPLICATION_SERVER']],#Ref0008\
+			   ['Web Servers',r'/.*\#Server_.*','name',True,['serverType','WEB_SERVER']],#Ref0008\
+	           ['Clusters',r'/.*\#ServerCluster_.*','name',False],\
 			   ['Virtual Hosts','.*VirtualHost_.*','name',False],\
 			   ['Core Groups','.*CoreGroup_.*','name',False],\
 			   ['Data Sources','.*DataSource_.*','name',True],\
@@ -1565,7 +1565,7 @@ def ApplicationsReport(report):
 #########################################################################################################
 def ClustersReport():
 	cu.printMsg('Clusters found for server cluster report:',False)
-	configIDs = cu.findConfigIDs('.*\#ServerCluster_.*',True,cu.MasterDict)
+	configIDs = cu.findConfigIDs(r'.*\#ServerCluster_.*',True,cu.MasterDict)
 	clusters = []
 	for configID in configIDs:
 		name = cu.MasterDict[configID]['name']
@@ -1588,7 +1588,7 @@ def ClustersReport():
 # Compares all TAIs by the same class and domain with each other.  
 #########################################################################################################
 def TrustAssociationReport():
-	configIDs = cu.findConfigIDs('.*\#TrustAssociation_.*',True,cu.MasterDict)
+	configIDs = cu.findConfigIDs(r'.*\#TrustAssociation_.*',True,cu.MasterDict)
 	configIDs.sort()
 	cells = cu.getCellNames(cu.MasterDict)
 	cells.sort()
@@ -1663,22 +1663,22 @@ def getSecDomain(configID):
 
 def getTAConfigID(domain,cell):
 	if domain == 'Global':
-		return cu.findConfigIDs('\(cells\/%s\|.*\#TrustAssociation\_' % re.escape(cell),False,None)
+		return cu.findConfigIDs(r'\(cells\/%s\|.*\#TrustAssociation\_' % re.escape(cell),False,None)
 	else:
 		idx = cell.rfind('-') + 1
-		return cu.findConfigIDs('\(waspolicies\/default\-%s\/securitydomains\/%s\|.*\#TrustAssociation\_' % \
+		return cu.findConfigIDs(r'\(waspolicies\/default\-%s\/securitydomains\/%s\|.*\#TrustAssociation\_' % \
 		                       (re.escape(cell[idx:]),re.escape(domain)),False,None)
 
 def getTAIConfigID(domain,cell,classname):
 	if domain == 'Global':
-		return cu.getConfigIDsByAttrValueFromDict('\(cells\/%s\|.*\#TAInterceptor\_' % re.escape(cell),\
+		return cu.getConfigIDsByAttrValueFromDict(r'\(cells\/%s\|.*\#TAInterceptor\_' % re.escape(cell),\
 												  classname,\
 												  'interceptorClassName',\
 												  True,\
 												  cu.MasterDict)
 	else:
 		idx = cell.rfind('-') + 1
-		return cu.getConfigIDsByAttrValueFromDict('\(waspolicies\/default\-%s\/securitydomains\/%s\|.*\#TAInterceptor\_' % \
+		return cu.getConfigIDsByAttrValueFromDict(r'\(waspolicies\/default\-%s\/securitydomains\/%s\|.*\#TAInterceptor\_' % \
 												  (re.escape(cell[idx:]),re.escape(domain)),\
 												  classname,\
 												  'interceptorClassName',\

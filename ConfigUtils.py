@@ -518,7 +518,7 @@ def getClusterServerList(cluster):
 		PropertiesDict['ServerExcludeList'].split(',')
 	except:
 		None
-	servers=findConfigIDs('.*\#Server_.*',True,MasterDict)
+	servers=findConfigIDs(r'.*\#Server_.*',True,MasterDict)
 	for member in members:
 		for server in servers:
 			if not MasterDict[member]['memberName'] in serverExcludeList and \
@@ -640,7 +640,7 @@ def fileListElementsMatch(matchList):
 	if len(matchList) < 2:
 		rtnVal = 'N/A'
 	else:
-		regex = 'Date\:[0-9]{4}\-[0-9]{2}\-[0-9]{2}\<br\>Time\:[0-9]{2}\:[0-9]{2}\:[0-9]{2}\.[0-9]{9}'
+		regex = r'Date\:[0-9]{4}\-[0-9]{2}\-[0-9]{2}\<br\>Time\:[0-9]{2}\:[0-9]{2}\:[0-9]{2}\.[0-9]{9}'
 		sizeCRCList=[]
 		dateTimeList=[]
 		for s in matchList:
@@ -1799,7 +1799,7 @@ def createServerFileDataList(fileSpecs):
 			fileDate = "No Date"
 			fileTime = "No Time"
 			fileName = name[name.rfind(os.sep)+1:]
-			if re.match('.*\.[0-9]{8}\.[0-9]{6}\.',fileName):
+			if re.match(r'.*\.[0-9]{8}\.[0-9]{6}\.',fileName):
 				fields = name.split('.')
 				fileDate = '%s-%s-%s' % (fields[1][0:4],fields[1][4:6],fields[1][6:8])
 				fileTime = '%s:%s:%s' % (fields[2][0:2],fields[2][2:4],fields[2][4:6])
